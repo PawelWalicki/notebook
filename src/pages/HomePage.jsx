@@ -1,32 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, TextField, Button, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { addNote, editNoteText, getNote } from '../services/noteService';
+import { useAuth } from "../hooks/useAuth";
 
 export const HomePage = () => {
+  // const user = auth.currentUser
+  const {user} = useAuth()
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [newNoteTitle, setNewNoteTitle] = useState('');
+  const [notesInEdit, setNotesInEdit] = useState(new Set())
+
+  useEffect(() => {
+    getNote(setNotes)
+    console.log(user)
+  }, [user])
 
   const handleAddNote = () => {
     if (newNote.trim()) {
-      setNotes([...notes, { title: newNoteTitle, text: newNote, editable: false }]);
+      addNote({ title: newNoteTitle, text: newNote });
       setNewNote('');
       setNewNoteTitle('');
     }
   };
 
-  const handleEditNote = (index) => {
+  const handleEditNote = (index, id) => {
+    if(notesInEdit.has(id)){
+      // SAVE
+      setNotesInEdit((prev) => {
+        prev.delete(id)
+
+        return prev
+    })
+    } else {
+      setNotesInEdit((prev)=> {
+        prev.add(id)
+        return prev
+      } )
+    }
+    // setNotesInEdit((prev) => [...notesInEdit, id])
+    //TODO
     const updatedNotes = notes.map((note, i) =>
       i === index ? { ...note, editable: !note.editable } : note
     );
     setNotes(updatedNotes);
   };
 
-  const handleChangeNote = (index, newText) => {
-    const updatedNotes = notes.map((note, i) =>
-      i === index ? { ...note, text: newText } : note
-    );
-    setNotes(updatedNotes);
+  const handleChangeNote = (id, newText) => {
+    editNoteText(id, newText)
   };
 
   return (
@@ -53,21 +75,21 @@ export const HomePage = () => {
       {notes.map((note, index) => (
         <Accordion key={index} style={{ marginTop: '10px' }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{note.editable ? 'Editing...' : `${note.title}`}</Typography>
+            <Typography>{notesInEdit.has(note.id)  ? 'Editing...' : `${note.title}`}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {note.editable ? (
+            {notesInEdit.has(note.id) ? (
               <TextField
                 multiline 
                 fullWidth
                 value={note.text}
-                onChange={(e) => handleChangeNote(index, e.target.value)}
+                onChange={(e) => handleChangeNote(note.id, e.target.value)}
               />
             ) : (
               <Typography>{note.text}</Typography>
             )}
-            <Button onClick={() => handleEditNote(index)} style={{ marginTop: '10px' }}>
-              {note.editable ? 'Save' : 'Edit'}
+            <Button onClick={() => handleEditNote(index, note.id)} style={{ marginTop: '10px' }}>
+              {notesInEdit.has(note.id)  ? 'Save' : 'Edit'}
             </Button>
           </AccordionDetails>
         </Accordion>
