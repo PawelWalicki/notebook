@@ -1,4 +1,4 @@
-import { onValue, push, ref, set, update } from "firebase/database"
+import { onValue, push, ref, remove, set, update } from "firebase/database"
 import { auth, db } from "../firebase"
 
 
@@ -52,4 +52,17 @@ export const editNoteText = (noteId, noteText) => {
     .then(() => console.log("Success!!"))
     .catch(() => "Error while editing note!")
 
+}
+
+export const deleteNote = (noteId) => {
+    const user = auth.currentUser
+    if (!user) {
+        console.log("User not logged in!")
+        return
+    }
+    const uid = user.uid
+    const notesRef = ref(db, `notes/${uid}/${noteId}`)
+    remove(notesRef)
+    .then(() => console.log("Success!!"))
+    .catch(() => console.log("Error while editing note!"))
 }
