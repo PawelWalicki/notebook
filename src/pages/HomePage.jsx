@@ -1,77 +1,52 @@
-import React, { useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, TextField, Button, Typography } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useAuth } from "../hooks/useAuth";
+import { Note } from '../components/Note';
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebase"
+import { signOut } from "firebase/auth";
+import './HomePage.css'
+import { Button } from "@mui/material";
+import { Footer } from "../components/Footer";
+
 
 export const HomePage = () => {
-  const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState('');
-  const [newNoteTitle, setNewNoteTitle] = useState('');
+  const navigate = useNavigate();
+  const { user, pending } = useAuth()
+  console.log(user, pending)
+  const logoutUser = async (e) => {
+    e.preventDefault();
 
-  const handleAddNote = () => {
-    if (newNote.trim()) {
-      setNotes([...notes, { title: newNoteTitle, text: newNote, editable: false }]);
-      setNewNote('');
-      setNewNoteTitle('');
-    }
-  };
+    await signOut(auth);
+    navigate("/");
+  }
 
-  const handleEditNote = (index) => {
-    const updatedNotes = notes.map((note, i) =>
-      i === index ? { ...note, editable: !note.editable } : note
-    );
-    setNotes(updatedNotes);
-  };
-
-  const handleChangeNote = (index, newText) => {
-    const updatedNotes = notes.map((note, i) =>
-      i === index ? { ...note, text: newText } : note
-    );
-    setNotes(updatedNotes);
-  };
+  if (pending) {
+    return (
+      <div>Loading...</div>
+    )
+  }
+  if (!user) {
+    return (
+      <div className="container-home">
+        <div> User not logged in! </div>
+        <div className="container-button">
+          <Button variant="contained" color="primary" onClick={() => navigate("./login")}> Sign in!</Button>
+          <Button variant="contained" color="primary" onClick={() => navigate("./register")} >Register!</Button>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
-      <h1>Notes App</h1>
-      <TextField
-        fullWidth
-        label="Note title"
-        value={newNoteTitle}
-        onChange={(e) => setNewNoteTitle(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleAddNote()}
-      />
-      <TextField
-        fullWidth
-        label="Add a new note"
-        value={newNote}
-        onChange={(e) => setNewNote(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && handleAddNote()}
-      />
-      <Button variant="contained" color="primary" onClick={handleAddNote} style={{ marginTop: '10px' }}>
-        Add Note
-      </Button>
-
-      {notes.map((note, index) => (
-        <Accordion key={index} style={{ marginTop: '10px' }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>{note.editable ? 'Editing...' : `${note.title}`}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {note.editable ? (
-              <TextField
-                multiline 
-                fullWidth
-                value={note.text}
-                onChange={(e) => handleChangeNote(index, e.target.value)}
-              />
-            ) : (
-              <Typography>{note.text}</Typography>
-            )}
-            <Button onClick={() => handleEditNote(index)} style={{ marginTop: '10px' }}>
-              {note.editable ? 'Save' : 'Edit'}
-            </Button>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+    <div >
+      <div className="info-user">
+        <p className="user">Welcome {user.email}</p>
+        <div>
+          <Button variant="contained" color="primary" onClick={(e) => logoutUser(e)}>Logout</Button>
+        </div>
+      </div>
+      <Note />
+      <Footer />
     </div>
-  );
+  )
 };

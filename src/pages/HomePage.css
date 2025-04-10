@@ -1,0 +1,30 @@
+.container-home {
+    margin-top: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container-button {
+    display: flex;
+    width: 40vh;
+    padding: 20px;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.img {
+    height: 50px;
+    width: 50px;
+ }
+
+.info-user {
+    margin: 20px;
+    display: grid;
+    grid-template-columns: 8fr 1fr;
+    align-items: center;
+}
+
+.user {
+    padding-right: 10px;
+}

@@ -2,6 +2,9 @@ import { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import "./Login.css"
+import { Button, Container, Grid2, TextField } from "@mui/material";
+import { Footer } from "../components/Footer";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -20,31 +23,87 @@ export const Login = () => {
         }
     }
 
-    return(
-        <div className = "container">
-            <div className = "row justify-content-center">
-                <form className = "col-md-4 mt-3 pt-3 pb-3">
-                    { "" !== notice &&
-                        <div className = "alert alert-warning" role = "alert">
-                            { notice }    
-                        </div>
-                    }                  
-                    <div className = "form-floating mb-3">
-                        <input type = "email" className = "form-control" id = "exampleInputEmail1" aria-describedby = "emailHelp" placeholder = "name@example.com" value = { email } onChange = { (e) => setEmail(e.target.value) }></input>
-                        <label htmlFor = "exampleInputEmail1" className = "form-label">Email address</label>
+    const handleEnterKeyPress = (e) => {
+        if (e.key === "Enter") {
+          loginWithUsernameAndPassword(e)
+        }
+      }
+
+    return (
+        <Container>
+            <h1 className='title'> Sign in </h1>
+            <div className='alert'>
+                {"" !== notice &&
+                    <div role="alert">
+                        {notice}
                     </div>
-                    <div className = "form-floating mb-3">
-                        <input type = "password" className = "form-control" id = "exampleInputPassword1" placeholder = "Password" value = { password } onChange = { (e) => setPassword(e.target.value) }></input>
-                        <label htmlFor = "exampleInputPassword1" className = "form-label">Password</label>
-                    </div>
-                    <div className = "d-grid">
-                        <button type = "submit" className = "btn btn-primary pt-3 pb-3" onClick = {(e) => loginWithUsernameAndPassword(e)}>Submit</button>
-                    </div>
-                    <div className = "mt-3 text-center">
-                        <span>Need to sign up for an account? <Link to = "/register">Click here.</Link></span>
-                    </div>
-                </form>
+                }
             </div>
-        </div>
+            <Grid2 container spacing={2} size="grow" display="flex" justifyContent="center" alignItems="center">
+                <Grid2 size={7}>
+                    <TextField
+                        type="email"
+                        label="E-mail"
+                        id="exampleInputEmail1"
+                        aria-describedby="emailHelp"
+                        placeholder="name@example.com"
+                        value={email} onChange={(e) => setEmail(e.target.value)}
+                        required
+                        fullWidth
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                color: "#417f9e",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "#417f9e",
+                                    borderWidth: "2px",
+                                },
+                            },
+                            "& .MuiInputLabel-outlined": {
+                                color: "#417f9e",
+                            },
+                        }}
+                    >
+                    </TextField>
+                </Grid2>
+                <Grid2 size={7}>
+                    <TextField
+                        type="password"
+                        label="Password"
+                        id="exampleInputPassword1"
+                        placeholder="Password"
+                        onKeyDown={e => handleEnterKeyPress(e)}
+                        value={password} onChange={(e) => setPassword(e.target.value)}
+                        required
+                        fullWidth
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                color: "#417f9e",
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "#417f9e",
+                                    borderWidth: "2px",
+                                },
+                            },
+                            "& .MuiInputLabel-outlined": {
+                                color: "#417f9e",
+                            },
+                        }}
+                    >
+                    </TextField>
+                </Grid2>
+                <Grid2 display="flex" justifyContent="center" alignItems="center" size={7}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        onClick={(e) => loginWithUsernameAndPassword(e)}
+                    >Submit
+                    </Button>
+                </Grid2>
+                <Grid2 display="flex" justifyContent="center" alignItems="center" size={7} paddingTop={"10px"}>
+                    <span>Need to sign up for an account? <Link to="/register">Click here.</Link></span>
+                </Grid2>
+            </Grid2>
+            <Footer/>
+        </Container >
     )
 }
