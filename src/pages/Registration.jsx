@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Container, Grid2, TextField } from '@mui/material';
 import "./Registration.css"
+import { Footer } from '../components/Footer';
 
 
 export const Registration = () => {
@@ -29,6 +30,12 @@ export const Registration = () => {
             setNotice("Passwords don't match. Please try again.");
         }
     };
+
+    const handleEnterKeyPress = (e) => {
+        if (e.key === "Enter") {
+            signupWithUsernameAndPassword()
+        }
+    }
 
     return (
         <Container>
@@ -99,6 +106,7 @@ export const Registration = () => {
                         value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                         fullWidth
+                        onKeyDown={e => handleEnterKeyPress(e)}
                         sx={{
                             "& .MuiOutlinedInput-root": {
                                 color: "#417f9e",
@@ -116,12 +124,9 @@ export const Registration = () => {
                 </Grid2>
                 <Grid2 display="flex" justifyContent="center" alignItems="center" size={7}>
                     <Button
-                        type="submit"
+                        variant="contained"
+                        color="primary"
                         onClick={(e) => signupWithUsernameAndPassword(e)}
-                        style={{
-                            backgroundColor: "#417f9e",
-                            color: "#ffffff",
-                        }}
                     >Signup
                     </Button>
                 </Grid2>
@@ -129,6 +134,7 @@ export const Registration = () => {
                     <span>Go back to login? <Link to="/login">Click here.</Link></span>
                 </Grid2>
             </Grid2>
+            <Footer />
         </Container >
     )
 }

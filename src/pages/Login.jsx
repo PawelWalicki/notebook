@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css"
 import { Button, Container, Grid2, TextField } from "@mui/material";
+import { Footer } from "../components/Footer";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -21,6 +22,12 @@ export const Login = () => {
             setNotice("You entered a wrong username or password.");
         }
     }
+
+    const handleEnterKeyPress = (e) => {
+        if (e.key === "Enter") {
+          loginWithUsernameAndPassword(e)
+        }
+      }
 
     return (
         <Container>
@@ -64,6 +71,7 @@ export const Login = () => {
                         label="Password"
                         id="exampleInputPassword1"
                         placeholder="Password"
+                        onKeyDown={e => handleEnterKeyPress(e)}
                         value={password} onChange={(e) => setPassword(e.target.value)}
                         required
                         fullWidth
@@ -84,12 +92,10 @@ export const Login = () => {
                 </Grid2>
                 <Grid2 display="flex" justifyContent="center" alignItems="center" size={7}>
                     <Button
+                        variant="contained"
+                        color="primary"
                         type="submit"
                         onClick={(e) => loginWithUsernameAndPassword(e)}
-                        style={{
-                            backgroundColor: "#417f9e",
-                            color: "#ffffff",
-                        }}
                     >Submit
                     </Button>
                 </Grid2>
@@ -97,6 +103,7 @@ export const Login = () => {
                     <span>Need to sign up for an account? <Link to="/register">Click here.</Link></span>
                 </Grid2>
             </Grid2>
+            <Footer/>
         </Container >
     )
 }
