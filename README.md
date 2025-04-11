@@ -1,6 +1,6 @@
 #  Notebook Mapp Application
 
-- Live Website: []()
+- Live Website: [Notebook](notebook-psi-gules.vercel.app)
 
 ### Features
 - The user can add the note 
@@ -16,7 +16,7 @@
 ### Links
 
 - Solution URL: [Solution URL](https://github.com/PawelWalicki/notebook)
-- Live Site URL: [Live Site URL]()
+- Live Site URL: [Live Site URL](notebook-psi-gules.vercel.app)
 
 ## My process
 
